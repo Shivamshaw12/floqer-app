@@ -4,9 +4,11 @@ import Papa from 'papaparse';
 import {useState,useEffect} from 'react';
 import Table from './table.js';
 import Chart from './chart.js';
+// import PopOver from './popover.js';
 
 export default function App() {
     const [ text, setText ] = useState([]);
+    const [ fullData, setFullData ] = useState([]);
     useEffect(() => {
     const fetchData = async () => {
       const response = await fetch('/salaries.csv');
@@ -15,6 +17,7 @@ export default function App() {
       const decoder = new TextDecoder('utf-8');
       const csv = decoder.decode(result.value); 
       const results = Papa.parse(csv, { header: true });
+      setFullData(results.data);
       const year_count={};
       results.data.map((item) => { 
       const value = item.work_year;
@@ -42,8 +45,9 @@ export default function App() {
     return (<p>No data available</p>);
     return (
       <div className="relative overflow-x-auto flex flex-col justify-center items-center m-32">
-        <Table data={text}/>
-        <Chart data={text}/>
+        <Table data={text} fullData={fullData}/>
+        <Chart chartData={text}/>
+        {/* <PopOver/> */}
       </div>
       );
 }

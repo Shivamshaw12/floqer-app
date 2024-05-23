@@ -1,26 +1,25 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect , useState } from 'react';
 import Chart from 'chart.js/auto';
-const data = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+ const data = {
+  labels: [],
   datasets: [
     {
-      label: 'Sales',
-      data: [100, 200, 300, 400, 500, 600, 700],
-      borderColor: 'rgba(75, 192, 192, 1)',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderWidth: 2,
-    },
-    {
-      label: 'Expenses',
-      data: [50, 100, 150, 200, 250, 300, 350],
+      label: 'Jobs',
+      data: [],
       borderColor: 'rgba(255, 99, 132, 1)',
       backgroundColor: 'rgba(255, 99, 132, 0.2)',
       borderWidth: 2,
     },
   ],
 };
+const LineChart = (chartData) => {
+    useEffect(() => {
+    chartData.chartData.map((item)=>{
+                data.labels.push(item.Year);
+                data.datasets[0].data.push(item.Number_of_total_jobs);
+            });
+       }, [chartData]);
 
-const LineChart = () => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -40,9 +39,9 @@ const LineChart = () => {
         chartInstance.current.destroy();
       }
     };
-  }, [data]);
+  }, [chartData]);
 
-  return <canvas ref={chartRef} />;
+  return <canvas className="mt-10" ref={chartRef} />;
 };
 
 export default LineChart;

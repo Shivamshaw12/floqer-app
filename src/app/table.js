@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from 'react';
 
-const SortableTable = ({ data = [] }) => {
+const SortableTable = ({ data = [] ,fullData = []}) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [isRotated, setIsRotated] = useState(false);
+  const [jobTitles, setjobTitles] = useState(false);
+  const [activeYear, setActiveYear] = useState();
 
   const toggleRotation = () => {
     setIsRotated(!isRotated);
@@ -44,6 +46,23 @@ const SortableTable = ({ data = [] }) => {
     }
     return sortConfig.key === key ? sortConfig.direction : undefined;
   };
+  
+
+  const rowTable = (item) => {
+    // console.log(item,fullData);
+    setActiveYear(item.Year);
+    const year_filter = fullData.filter((data) => {
+      return item.Year === data.work_year;
+    });
+    const job_titles={};
+      year_filter.map((item) => { 
+      const value = item.job_title;
+      job_titles[value] = job_titles[value] ? job_titles[value] + 1 : 1;
+    });
+    setjobTitles(job_titles);
+    // console.log(job_titles);
+    
+  };
 
   return (
     <div>
@@ -52,7 +71,7 @@ const SortableTable = ({ data = [] }) => {
       ) : (
         <div>
         
-        <div className="relative overflow-x-auto flex flex-col justify-center items-center">
+        <div className="flex flex-col ">
           <p className="text-xl mb-10">Table to show year, count and average salary</p>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -93,19 +112,53 @@ const SortableTable = ({ data = [] }) => {
           </thead>
           <tbody>
             {sortedData.map((item, index) => (
-              <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" >
                 {keys.map((key) => (
-                  <td key={key} className="px-6 py-4">{item[key]}</td>
+                  <td key={key} onClick={() => rowTable(item)} className="px-6 py-4">{item[key]}</td>
                 ))}
               </tr>
             ))}
           </tbody>
         </table>
         </div>
+        {/* {jobTitles &&(
+          <div className="flex flex-col pt-10">
+          <p className="text-xl mb-10">Table for year {activeYear}</p>
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Job Title
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    number of jobs
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {!jobTitles ? (
+        <p>No data available</p>
+      ) : (jobTitles?.map((element) => {
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {element}
+                </th>
+                <td class="px-6 py-4">
+                    {element}
+                </td>
+            </tr>
+            }))};
+            
+        </tbody>
+    </table>
+    </div>
+)} */}
         </div>
       )}
     </div>
   );
 };
+
+
 
 export default SortableTable;
